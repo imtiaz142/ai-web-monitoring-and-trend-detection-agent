@@ -1,0 +1,160 @@
+"use client";
+
+import { useInsights } from "@/lib/hooks/useInsights";
+import { generateInsight } from "@/lib/api";
+import { useState } from "react";
+import { Brain, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import clsx from "clsx";
+
+const momentumArrows: Record<string, string> = {
+  accelerating: "^",
+  growing: "/",
+  stable: "->",
+  decelerating: "\\",
+  declining: "v",
+};
+
+export default function InsightCard() {
+  const { data, isLoading, mutate } = useInsights();
+  const [expanded, setExpanded] = useState(false);
+  const [generating, setGenerating] = useState(false);
+
+  const insight = data?.data;
+  let parsed: any = null;
+
+  if (insight?.content) {
+    try {
+      parsed = JSON.parse(insight.content);
+    } catch {
+      parsed = null;
+    }
+  }
+
+  const handleGenerate = async () => {
+    setGenerating(true);
+    try {
+      await generateInsight();
+      await mutate();
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="bg-bg-card border border-border rounded-lg p-4">
+        <div className="h-32 animate-pulse bg-bg-secondary rounded" />
+      </div>
+    );
+  }
+
+  if (!insight || !parsed) {
+    return (
+      <div className="bg-bg-card border border-border rounded-lg p-6 text-center">
+        <Brain className="w-8 h-8 text-text-muted mx-auto mb-3" />
+        <p className="text-text-muted text-sm mb-4">
+          No AI insight generated yet. Insights auto-generate daily at 08:00
+          UTC.
+        </p>
+        <button
+          onClick={handleGenerate}
+          disabled={generating}
+          className="px-4 py-2 bg-accent-cyan/10 text-accent-cyan rounded-lg text-sm hover:bg-accent-cyan/20 transition-colors disabled:opacity-50"
+        >
+          <Sparkles className="w-3.5 h-3.5 inline mr-1.5" />
+          {generating ? "Generating..." : "Generate Now"}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-bg-card border border-accent-cyan/20 rounded-lg overflow-hidden">
+      <div className="bg-gradient-to-r from-accent-cyan/10 to-transparent p-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <h3 className="font-heading text-sm font-semibold text-accent-cyan">
+              {parsed.title || "AI Trend Briefing"}
+            </h3>
+            <p className="text-text-primary text-sm mt-2 leading-relaxed">
+              {parsed.executive_summary}
+            </p>
+          </div>
+          <button
+            onClick={handleGenerate}
+            disabled={generating}
+            className="px-2 py-1 text-[10px] text-accent-cyan hover:bg-accent-cyan/10 rounded transition-colors disabled:opacity-50"
+          >
+            {generating ? "..." : "Refresh"}
+          </button>
+        </div>
+      </div>
+
+      <div className="px-4 pb-4">
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex items-center gap-1 text-xs text-text-muted hover:text-text-primary mt-3 mb-2 transition-colors"
+        >
+          {expanded ? (
+            <ChevronUp className="w-3 h-3" />
+          ) : (
+            <ChevronDown className="w-3 h-3" />
+          )}
+          Key Trends ({parsed.key_trends?.length || 0})
+        </button>
+
+        {expanded && parsed.key_trends && (
+          <div className="space-y-2 mb-3">
+            {parsed.key_trends.map((kt: any, i: number) => (
+              <div
+                key={i}
+                className="p-2 bg-bg-secondary rounded-lg border border-border/50"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-accent-amber">
+                    {kt.trend}
+                  </span>
+                  <span className="text-[10px] text-text-muted">
+                    {momentumArrows[kt.momentum] || "->"} {kt.momentum}
+                  </span>
+                </div>
+                <p className="text-xs text-text-muted mt-1">
+                  {kt.why_it_matters}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {parsed.market_signals && (
+          <div className="mt-2">
+            <p className="text-[10px] text-text-muted uppercase tracking-wider mb-1">
+              Market Signals
+            </p>
+            <ul className="space-y-0.5">
+              {parsed.market_signals.map((s: string, i: number) => (
+                <li key={i} className="text-xs text-text-primary flex gap-1.5">
+                  <span className="text-accent-cyan">*</span> {s}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="mt-3 pt-3 border-t border-border/50 flex items-center justify-between">
+          <span className="text-[10px] text-text-muted">
+            Generated by {insight.model_used} via Ollama
+          </span>
+          {insight.generated_at && (
+            <span className="text-[10px] text-text-muted">
+              {formatDistanceToNow(new Date(insight.generated_at), {
+                addSuffix: true,
+              })}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

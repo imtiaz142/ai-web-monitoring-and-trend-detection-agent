@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg-primary:   #090d1a;
+  --bg-secondary: #0d1120;
+  --bg-card:      #111827;
+  --border:       #1f2d45;
+  --accent-cyan:  #00d4ff;
+  --accent-amber: #ffb300;
+  --accent-green: #00ff88;
+  --accent-red:   #ff4d6d;
+  --text-primary: #e2e8f0;
+  --text-muted:   #64748b;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes velocity-bar {
+  from { width: 0; }
+}
+
+.animate-velocity {
+  animation: velocity-bar 0.8s ease-out;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
