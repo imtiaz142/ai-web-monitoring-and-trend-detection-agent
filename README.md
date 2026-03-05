@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AI Web Monitoring & Trend Detection Agent
 
 An autonomous system that continuously scrapes AI & Technology news sources, detects emerging trends using keyword frequency and topic velocity analysis, and presents AI-generated insights on a real-time web dashboard.
@@ -124,3 +125,7 @@ If Ollama is not running, the app still works fully - scraping, trend analysis, 
 ## License
 
 MIT
+=======
+# ai-web-monitoring-and-trend-detection-agent
+A multi-agent AI platform that performs automated web monitoring, trend detection, and insight generation using Python, FastAPI, and a Next.js dashboard.
+>>>>>>> 6f5937448ffc8876fa6cc7dfd7d37ef727f95a1e
