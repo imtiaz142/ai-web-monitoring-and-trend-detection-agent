@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_session
 from app.models.article import Article
 from app.models.trend import Trend
-from app.services.ai_analyst import check_ollama_available
+from app.services.ai_analyst import check_ai_available
 
 router = APIRouter(prefix="/api/stats", tags=["stats"])
 
@@ -35,7 +35,7 @@ async def get_stats(session: AsyncSession = Depends(get_session)):
     )
     last_scrape = last_scrape_result.scalar_one_or_none()
 
-    ollama_status = await check_ollama_available()
+    ai_status = await check_ai_available()
 
     return {
         "success": True,
@@ -44,7 +44,9 @@ async def get_stats(session: AsyncSession = Depends(get_session)):
             "total_trends": total_trends,
             "emerging_count": emerging_count,
             "last_scrape_at": last_scrape.isoformat() if last_scrape else None,
-            "ollama_status": "online" if ollama_status else "offline",
+            "ai_status": ai_status,
+            # Keep backward compat
+            "ollama_status": ai_status.get("status", "offline"),
         },
         "timestamp": datetime.utcnow().isoformat(),
     }

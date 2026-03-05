@@ -30,6 +30,7 @@ async def init_db():
     from app.models.trend import Trend  # noqa: F401
     from app.models.trend_snapshot import TrendSnapshot  # noqa: F401
     from app.models.insight import AIInsight  # noqa: F401
+    from app.models.ai_settings import AISettings  # noqa: F401
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Brain, Home, Code2, ExternalLink } from "lucide-react";
+import { BarChart3, Brain, Home, Code2, ExternalLink, Settings } from "lucide-react";
 import clsx from "clsx";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: Home },
   { href: "/insights", label: "AI Insights", icon: Brain },
+  { href: "/settings", label: "AI Settings", icon: Settings },
 ];
 
 export default function Sidebar() {

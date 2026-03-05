@@ -7,6 +7,7 @@ from app.api.trends import router as trends_router
 from app.api.articles import router as articles_router
 from app.api.insights import router as insights_router
 from app.api.stats import router as stats_router
+from app.api.ai_settings import router as ai_settings_router
 from app.services.rss_fetcher import run_scrape_cycle
 from app.services.trend_analyzer import run_trend_analysis
 from app.services.scheduler import get_scheduler_jobs
@@ -17,6 +18,7 @@ master_router.include_router(trends_router)
 master_router.include_router(articles_router)
 master_router.include_router(insights_router)
 master_router.include_router(stats_router)
+master_router.include_router(ai_settings_router)
 
 
 @master_router.post("/api/scrape/trigger", tags=["scrape"])

@@ -35,13 +35,15 @@ export default function Header() {
           <span
             className={clsx(
               "w-2 h-2 rounded-full",
-              stats?.ollama_status === "online"
+              stats?.ai_status?.status === "online" || stats?.ai_status?.status === "configured"
                 ? "bg-accent-green"
                 : "bg-accent-red"
             )}
           />
           <span className="text-xs text-text-muted">
-            Ollama {stats?.ollama_status || "..."}
+            {stats?.ai_status?.provider
+              ? `${stats.ai_status.provider} ${stats.ai_status.status}`
+              : "AI ..."}
           </span>
         </div>
         <button
